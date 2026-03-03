@@ -21,3 +21,20 @@ export const delTask = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+export const updateTask = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedTask = await Task.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+
+    if (!updatedTask) {
+      return res.status(404).json({ message: "task not found" });
+    }
+
+    res.json(updatedTask);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
