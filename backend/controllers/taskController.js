@@ -44,7 +44,9 @@ export const findAllTasks = async (req, res) => {
   try {
     const { status } = req.query;
     const filter = status ? { status } : {};
-    const allTasks = await Task.find(filter).sort({ createdAt: -1 });
+    const allTasks = await Task.find(filter)
+      .sort({ createdAt: -1 })
+      .select("title status");
     res.json(allTasks);
   } catch (err) {
     res.status(400).json({ message: err.message });
