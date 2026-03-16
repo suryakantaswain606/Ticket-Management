@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api/axios";
+import { TaskItem } from "./TaskItem";
 
 export const Main = () => {
   const [tasks, setTasks] = useState([]);
@@ -8,13 +9,10 @@ export const Main = () => {
 
   const [loading, setLoading] = useState(true);
 
-  const [editingId, setEditingId] = useState(null);
-  const [editValue, setEditValue] = useState("");
-
   useEffect(() => {
     async function fetchTasks() {
       try {
-        const res = await axios.get("http://localhost:3080/api/tasks");
+        const res = await api.get("/api/tasks");
         setTasks(res.data);
       } catch (error) {
         console.log(error);
@@ -27,14 +25,14 @@ export const Main = () => {
   }, []);
 
   async function handleAdd() {
-    if (!input) return;
+    if (!input.trim()) return;
 
     try {
-      const res = await axios.post("http://localhost:3080/api/tasks/", {
+      const res = await api.post("/api/tasks", {
         title: input,
       });
 
-      setTasks([...tasks, res.data]);
+      setTasks((prev) => [...prev, res.data]);
       setInput("");
     } catch (error) {
       console.log(error);
@@ -43,9 +41,9 @@ export const Main = () => {
 
   async function handleDel(id) {
     try {
-      await axios.delete(`http://localhost:3080/api/tasks/${id}`);
+      await api.delete(`/api/tasks/${id}`);
 
-      setTasks(tasks.filter((t) => t._id !== id));
+      setTasks((prev) => prev.filter((t) => t._id !== id));
     } catch (error) {
       console.log(error);
     }
@@ -54,34 +52,26 @@ export const Main = () => {
   async function handleCheckbox(id, currentStatus) {
     const newStatus = currentStatus === "open" ? "closed" : "open";
     try {
-      const res = await axios.put(`http://localhost:3080/api/tasks/${id}`, {
+      const res = await api.put(`/api/tasks/${id}`, {
         status: newStatus,
       });
-      setTasks(
-        tasks.map((t) => {
-          if (t._id === id)
-            return {
-              ...t,
-              status: res.data.status,
-            };
-          return t;
-        }),
+      setTasks((prev) =>
+        prev.map((t) => (t._id === id ? { ...t, status: res.data.status } : t)),
       );
     } catch (error) {
       console.log(error);
     }
   }
 
-  const handleEdit = async (id) => {
+  const handleEdit = async (id, editValue) => {
     if (!editValue.trim()) return;
     try {
-      const res = await axios.put(`http://localhost:3080/api/tasks/${id}`, {
+      const res = await api.put(`/api/tasks/${id}`, {
         title: editValue,
       });
-      setTasks(
-        tasks.map((t) => (t._id === id ? { ...t, title: res.data.title } : t)),
+      setTasks((prev) =>
+        prev.map((t) => (t._id === id ? { ...t, title: res.data.title } : t)),
       );
-      setEditingId(null);
     } catch (error) {
       console.log(error);
     }
@@ -106,7 +96,11 @@ export const Main = () => {
           className="input input-bordered w-full"
         />
 
-        <button onClick={handleAdd} className="btn btn-primary">
+        <button
+          disabled={!input.trim()}
+          onClick={handleAdd}
+          className="btn btn-primary"
+        >
           Add
         </button>
       </div>
@@ -118,53 +112,13 @@ export const Main = () => {
           </p>
         ) : (
           tasks.map((task) => (
-            <li
+            <TaskItem
               key={task._id}
-              className="flex justify-between items-center p-3 border rounded-lg shadow-sm bg-base-100"
-            >
-              <div className="flex items-center gap-3">
-                <input
-                  onClick={() => handleCheckbox(task._id, task.status)}
-                  type="checkbox"
-                  className="checkbox checkbox-primary"
-                  checked={task.status === "closed"}
-                  onChange={() => {}}
-                />
-
-                {editingId === task._id ? (
-                  <input
-                    autoFocus
-                    value={editValue}
-                    onChange={(e) => setEditValue(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleEdit(task._id);
-                      if (e.key === "Escape") setEditingId(null);
-                    }}
-                    onBlur={() => handleEdit(task._id)}
-                    className="input input-bordered input-xs w-full"
-                  />
-                ) : (
-                  <span
-                    onDoubleClick={() => {
-                      setEditingId(task._id);
-                      setEditValue(task.title);
-                    }}
-                    className={
-                      task.status === "closed" ? "line-through opacity-60" : ""
-                    }
-                  >
-                    {task.title}
-                  </span>
-                )}
-              </div>
-
-              <button
-                className="btn btn-error btn-xs"
-                onClick={() => handleDel(task._id)}
-              >
-                Delete
-              </button>
-            </li>
+              task={task}
+              onDelete={handleDel}
+              onToggle={handleCheckbox}
+              onEdit={handleEdit}
+            ></TaskItem>
           ))
         )}
       </ul>
