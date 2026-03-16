@@ -1,16 +1,111 @@
-# React + Vite
+# Task Management App — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend for a full-stack Task Management application built with **React + Vite**.
+This interface allows users to create, update, toggle, and delete tasks while interacting with a deployed REST API.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React
+- Vite
+- Axios
+- Tailwind CSS + DaisyUI
+- REST API integration
 
-## React Compiler
+## Features
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+- Add new tasks
+- Inline editing (double-click to edit)
+- Toggle task status (open / closed)
+- Delete tasks
+- Keyboard shortcuts (Enter / Escape)
+- Loading state
+- Empty state handling
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```
+src
+ ├ api
+ │   └ axios.js
+ ├ components
+ │   ├ Navbar.jsx
+ │   └ TaskItem.jsx
+ ├ pages
+ │   └ Main.jsx
+ ├ App.jsx
+ ├ main.jsx
+ └ index.css
+```
+
+## Environment Variables
+
+Create a `.env` file in the project root.
+
+```
+VITE_API_URL=https://your-backend-url
+```
+
+Example:
+
+```
+VITE_API_URL=https://ticket-management-4yib.onrender.com
+```
+
+## Installation
+
+Clone the repository and install dependencies.
+
+```
+npm install
+```
+
+## Run Development Server
+
+```
+npm run dev
+```
+
+App will run at:
+
+```
+http://localhost:5173
+```
+
+## Build for Production
+
+```
+npm run build
+```
+
+Preview production build:
+
+```
+npm run preview
+```
+
+## Backend Repository
+
+This frontend communicates with a Node.js + Express API.
+
+Backend provides:
+
+- Task CRUD API
+- MongoDB database
+- REST endpoints
+
+## Deployment
+
+Frontend can be deployed easily on platforms such as:
+
+- Vercel
+- Netlify
+
+Make sure to set the environment variable:
+
+```
+VITE_API_URL
+```
+
+## Author
+
+Suryakanta Swain

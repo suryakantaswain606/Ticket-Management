@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../api/axios";
-import { TaskItem } from "./TaskItem";
+import { TaskItem } from "../components/TaskItem";
 
 export const Main = () => {
   const [tasks, setTasks] = useState([]);
