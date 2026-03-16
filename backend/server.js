@@ -10,6 +10,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.get("/", (req, res) => {
+  res.send("API running");
+});
+
 app.use("/api/tasks", taskRoutes);
 
 app.use((req, res) => {
